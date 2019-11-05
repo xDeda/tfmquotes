@@ -1,0 +1,163 @@
+body {
+	margin: 45px 300px 45px 300px;
+	color: #C2C2DA;
+	background-color: #402A1D;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:visited { 
+    color: pink;
+}
+
+h2 {
+    margin: 0px;
+}
+
+#name {
+	color: #009D9D;
+}
+
+.form-style-1 {
+	margin: 0px;
+    max-width: 800px;
+    max-height: 500px;
+}
+.form-style-1 li {
+    padding: 0;
+    display: block;
+    list-style: none;
+    margin: 10px 0 0 0;
+}
+.form-style-1 label{
+    margin:0 0 3px 0;
+    padding:0px;
+    display:block;
+    font-weight: bold;
+}
+textarea, #quote{
+	background-color: #402A1D;
+	color: #C2C2DA;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    border:1px solid #BEBEBE;
+    padding: 17px;
+    margin:10px 0px 5px 0px;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.form-style-1 textarea:focus, #quote:hover{
+    -moz-box-shadow: 0 0 8px #C2C2DA;
+    -webkit-box-shadow: 0 0 8px #C2C2DA;
+    box-shadow: 0 0 8px #C2C2DA;
+    border: 1px solid #C2C2DA;
+    white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.form-style-1 .field-long{
+    width: 100%;
+}
+.form-style-1 .field-textarea{
+    height: 400px;
+}
+.form-style-1 input[type=submit], .form-style-1 input[type=button]{
+    background: #3C5064;
+    padding: 8px 15px 8px 15px;
+    border: none;
+    color: #fff;
+}
+.form-style-1 input[type=submit]:hover, .form-style-1 input[type=button]:hover{
+    background: #2ECF73;
+    box-shadow:none;
+    -moz-box-shadow:none;
+    -webkit-box-shadow:none;
+}
+.form-style-1 .required{
+    color:red;
+}
+hr {
+    height: 1px;
+    border: none;
+    background-color: #78583A;
+}
+
+.errors {
+    color: #CB546B; /* This tribe name is already taken, please choose another. */
+}
+
+.info {
+    color: #6C77C1; /* Admshumaker is now your shaman, follow her! */
+}
+
+.special {
+    color: #BABD2F; /* Admshumaker had just unlocked the «Cheeeeeese *-*» title. */
+}
+
+.text {
+    color: #C2C2DA; /* [Admshumaker] Hello. */
+}
+
+.connect {
+    color: #606090; /* Admshumaker - disconnected */
+}
+
+.names {
+    color: #009D9D; /* [Admshumaker] */
+}
+
+.mod {
+    color: #ED67EA; /* • [SERVER] The server will restart in 2 minutes. */
+}
+
+.bluesham {
+    color: #98E2EB; /* Admshumaker is now your shaman, follow her! */
+}
+
+.pinksham {
+    color: #FEB1FC; /* [Shaman Admshumaker] Hello. */
+}
+
+.wout {
+    color: #EDCC8D; /* < [Evilsantah] hi qt */
+}
+
+.winname {
+    color: #E68D43; /* > [Evilsantah] */
+}
+
+.wintext {
+    color: #F0A78E; /* > [Evilsantah] hi qt */
+}
+
+.tn {
+    color: #30BA76; /* • [Admshumaker] */
+}
+
+.tc {
+    color: #92CF91; /* • [Admshumaker] Hello. */
+}
+
+.chat1 {
+    color: #F0C5FE; /* [20:13] [•] */
+}
+
+.chat2 {
+    color: #CAA5CE; /* [20:13] [•] You have joined the channel [#united kingdom] */
+}
+
+.server {
+    color: #12DA8A; /* • [en] Don't forget to nominate Transformice for "the Best Use Of A Farm Animal Award"! * /
+}
