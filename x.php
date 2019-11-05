@@ -23,5 +23,3 @@ mysqli_close($link);
 header("Location: http://178.62.23.109/quotes/indexu.php?all&msg=$id");
 
 ?>
-
-fuck off urwa
