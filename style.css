@@ -2,7 +2,7 @@ body {
 	margin: 45px 300px 45px 300px;
 	color: #C2C2DA;
 	background-color: #402A1D;
-    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
 }
 
 a {
@@ -18,28 +18,33 @@ h2 {
     margin: 0px;
 }
 
-#name {
-	color: #009D9D;
+hr {
+    height: 1px;
+    border: none;
+    background-color: #78583A;
 }
 
 .form-style-1 {
 	margin: 0px;
-    max-width: 800px;
-    max-height: 500px;
+    width: 800px;
+    height: 500px;
 }
+
 .form-style-1 li {
     padding: 0;
     display: block;
     list-style: none;
     margin: 10px 0 0 0;
 }
-.form-style-1 label{
+
+.form-style-1 label {
     margin:0 0 3px 0;
     padding:0px;
     display:block;
     font-weight: bold;
 }
-textarea, #quote{
+
+textarea, .quote {
 	background-color: #402A1D;
 	color: #C2C2DA;
     box-sizing: border-box;
@@ -57,7 +62,8 @@ textarea, #quote{
     word-break: break-all;
     word-wrap: break-word;
 }
-.form-style-1 textarea:focus, #quote:hover{
+
+.form-style-1 textarea:focus, .quote:hover {
     -moz-box-shadow: 0 0 8px #C2C2DA;
     -webkit-box-shadow: 0 0 8px #C2C2DA;
     box-shadow: 0 0 8px #C2C2DA;
@@ -67,31 +73,58 @@ textarea, #quote{
     word-wrap: break-word;
 }
 
-.form-style-1 .field-long{
+.form-style-1 .field-long {
     width: 100%;
 }
-.form-style-1 .field-textarea{
+
+.form-style-1 .field-textarea {
     height: 400px;
 }
-.form-style-1 input[type=submit], .form-style-1 input[type=button]{
+
+.form-style-1 input[type=submit], .form-style-1 input[type=button] {
     background: #3C5064;
     padding: 8px 15px 8px 15px;
     border: none;
     color: #fff;
 }
-.form-style-1 input[type=submit]:hover, .form-style-1 input[type=button]:hover{
+
+.form-style-1 input[type=submit]:hover, .form-style-1 input[type=button]:hover {
     background: #2ECF73;
     box-shadow:none;
     -moz-box-shadow:none;
     -webkit-box-shadow:none;
 }
-.form-style-1 .required{
+
+.form-style-1 .required {
     color:red;
 }
-hr {
-    height: 1px;
-    border: none;
-    background-color: #78583A;
+
+.search {
+    color: #C2C2DA;
+    background-color: #402A1D;
+    border: 1px solid #BEBEBE;
+    margin-top: 2px;
+    padding: 4px 4px 4px 8px;
+    float:right;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+}
+
+.search:hover, .search:focus {
+    -moz-box-shadow: 0 0 4px #C2C2DA;
+    -webkit-box-shadow: 0 0 4px #C2C2DA;
+    box-shadow: 0 0 4px #C2C2DA;
+    outline: none;
+}
+
+::placeholder {
+    color: #C2C2DA;
+}
+
+.name {
+    color: #009D9D; /* [Evilsantah#0000] */
 }
 
 .errors {
@@ -111,7 +144,7 @@ hr {
 }
 
 .connect {
-    color: #606090; /* Admshumaker - disconnected */
+    color: #6c77c1; /* Admshumaker - disconnected */
 }
 
 .names {
