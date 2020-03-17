@@ -6,15 +6,27 @@ $password = "PASS";
 $dbname = "quotes";
 
 $id = $_GET["id"];
-$all = $_GET["all"];
+$submit = $_GET["submit"];
+$page = $_GET["p"];
 
 function Colorify($q) {
 	$q = explode("<br />", $q);
 	foreach ($q as $qq) {
-		if (strpos($qq, "just connected.") || strpos($qq, "has disconnected.") || strpos($qq, "No cheese for you! ^_^") !== false) {
+		if (strpos($qq, "• [") === 0 && strpos($qq, "• [Moderation]") !== 0 && strpos($qq, "• [0") !== 0 && strpos($qq, "• [1") !== 0 && strpos($qq, "• [2") !== 0) {
+			$qq = str_replace("• [", "<span class=\"tn\">• [", $qq);
+			$qq = str_replace("]", "]</span><span class=\"tc\">", $qq) . "</span><br />";
+			echo $qq;
+		} elseif (strpos($qq, "• [0") === 0 || strpos($qq, "• [1") === 0 || strpos($qq, "• [2") === 0) {
+			$qq = explode("]", $qq);
+			echo "<span class=\"tn\">" . $qq[0] . "]" . $qq[1] . "]</span><span class=\"tc\">" . $qq[2];
+			if (isset($qq[3])) { echo $qq[3]; }
+			echo "</span><br />";
+		} elseif (strpos($qq, "• [Moderation]") === 0) {
+			echo "<span class=\"mod\">" . $qq . "</span><br />";
+		} elseif (strpos($qq, "• [SERVER]") === 0) {
+			echo "<span class=\"mod\">" . $qq . "</span><br />";
+		} elseif (strpos($qq, "just connected.") || strpos($qq, "has disconnected.") || strpos($qq, "No cheese for you! ^_^") || strpos($qq, "You just entered room") !== false) {
 			echo "<span class=\"connect\">" . $qq . "</span><br />";
-		} elseif (strpos($qq, "< [") !== false) {
-			echo "<span class=\"wout\">" . $qq . "</span><br />";
 		} elseif (strpos($qq, "is now your shaman, follow her!") !== false) {
 			echo "<span class=\"bluesham\">" . $qq . "</span><br />";
 		} elseif (strpos($qq, "name is already taken") !== false) {
@@ -23,6 +35,8 @@ function Colorify($q) {
 			echo "<span class=\"chat1\" style=\"color: #F0C5FE;\">" . $qq . "</span><br />";
 		} elseif (strpos($qq, "had just unlocked the") !== false) {
 			echo "<span class=\"special\">" . $qq . "</span><br />";
+		} elseif (strpos($qq, "< [") !== false) {
+			echo "<span class=\"wout\">" . $qq . "</span><br />";
 		} elseif (strpos($qq, "> [") !== false) {
 			echo "<span class=\"wintext\">";
 			$qq = str_replace("[", "[<span class=\"winname\">", $qq);
@@ -31,16 +45,10 @@ function Colorify($q) {
 		} elseif (strpos($qq, "[Shaman ") !== false) {
 			$qq = str_replace("[Shaman ", "<span class=\"names\">[Shaman ", $qq);
 			echo str_replace("]", "]</span><span class=\"bluesham\"> ", $qq) . "</span><br />";
-		} elseif (strpos($qq, "[") == 0) {
+		} elseif (strpos($qq, "[") === 0) {
 			$qq = str_replace("[", "<span class=\"names\">[", $qq);
 			echo str_replace("]", "]</span>", $qq) . "<br />";
-		} elseif (strpos($qq, "• [SERVER]") !== false) {
-			echo "<span class=\"mod\">" . $qq . "</span><br />";
-		} elseif (strpos($qq, "• [") == 0) {
-			$qq = str_replace("• [", "<span class=\"tc\">•</span> <span class=\"tn\">[", $qq);
-			echo str_replace("]", "]</span><span class=\"tc\">", $qq) . "</span><br />";
-		}
-		else {
+		} else {
 			echo $qq . "<br />";
 		}
 	}
@@ -49,6 +57,19 @@ function Colorify($q) {
 function mynl2br($text) {
 	return strtr($text, array("\r\n" => '<br />', "\r" => '<br />', "\n" => '<br />')); 
 }
+?>
+<!DOCTYPE html>
+<head>
+<title>TFM Quotes bin</title>
+<script src="jquery-3.4.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body><div class="form-style-1">
+<div style="display:inline-block;"><h2><a href="http://178.62.23.109/quotes/?submit"><span class="name">[Tactcat]</span></a> Hello, welcome to my <a href="http://178.62.23.109/quotes/" style="color: #ED67EA;border-bottom: 1px solid currentColor;">quotes</a> bin!</h2></div><input type="text" class="search" placeholder="search..." autocomplete="off" autofocus><font size="2"><a href="http://178.62.23.109/quotes/?submit"> » submit</a></font><hr>
+
+<?php
+
 
 if (isset($_POST["quote"])) {
 	$link = mysqli_connect($servername, $username, $password, $dbname);
@@ -74,16 +95,6 @@ if (isset($_POST["quote"])) {
 	header("Location: http://178.62.23.109/quotes/?id=$last_id");
 
 } elseif (isset($id)) {
-
-?>
-
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="icon" type="image/png" href="favicon.png">
-<ul class="form-style-1">
-	<li>
-		<label><h2><a href="http://178.62.23.109/quotes/"><font id="name">[Tactcat]</font></a> Hello, welcome to my <a href="http://178.62.23.109/quotes/?all" class="mod" style="color: #ED67EA;" style="color: #ED67EA;">quotes</a> bin!<hr></h2>
-
-<?php 
 	
 	$conn = new mysqli($servername, $username, $password, $dbname);
 	if ($conn->connect_error) {
@@ -96,7 +107,7 @@ if (isset($_POST["quote"])) {
 	if ($result->num_rows > 0) {
 		while($row = $result->fetch_assoc()) {
 			$id = $row["id"];
-			echo "</label><a href=\"http://178.62.23.109/quotes/?id=$id\" class=\"chat1\" style=\"color: #F0C5FE;\"> Quote ID: $id</a><div id=\"quote\">";
+			echo "<a href=\"http://178.62.23.109/quotes/?id=$id\" class=\"chat1\" style=\"color: #F0C5FE;\"> Quote ID: $id</a><div class=\"quote\">";
 			Colorify($row["quote"]);
 			echo "</div><small>date: " . $row["postdate"]. "</small><br />";
 		}
@@ -109,18 +120,57 @@ if (isset($_POST["quote"])) {
     </li>
 </ul>
 <?php
-} elseif (isset($all)) {
+} elseif (isset($submit)) {
 ?>
+        Your Quote <span class="required">*</span>
+     	<form method="post" method="index.php">
+        <textarea name="quote" id="field5" class="field-long field-textarea"></textarea>
+    </li>
+    <li>
+        <input type="submit" value="Submit" />
+    </li>
+    </form>
+</ul>
 
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="icon" type="image/png" href="favicon.png">
-<ul class="form-style-1">
-	<li>
-		<label><h2><a href="http://178.62.23.109/quotes/"><font id="name">[Tactcat]</font></a> Hello, welcome to my <a href="http://178.62.23.109/quotes/?all" class="mod" style="color: #ED67EA;">quotes</a> bin!<hr></h2>
 
-<?php 
+<?php } elseif (isset($page)) { 
 
-$items = array("https://i.imgur.com/gFbvY24.png", "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/High_Trestle_Trail_Bridge.jpg/1920px-High_Trestle_Trail_Bridge.jpg", "http://xdeda.github.io/?title=amy", "https://i.imgur.com/EwNBaAc.png", "https://i.imgur.com/yWO4pM3.png","https://en.wikipedia.org/wiki/List_of_fictional_felines","https://vocaroo.com/i/s1V5mMHFcsbH","https://vocaroo.com/i/s12cezlop9Ry","https://prnt.sc/k984ek","https://hastebin.com/ujicalilon.lua","https://mixmag.net/feature/is-despacio-a-new-take-on-clubbing-or-just-a-nostalgic-pipe-dream","https://cdn.discordapp.com/attachments/410507088058646528/427085528383619082/IMG-20180320-WA0079.jpg","http://shockslayer.com/feature-list/","https://cdn.shopify.com/s/files/1/1829/4817/products/qc-cod-mug.jpg?v=1491666560","http://api.urbandictionary.com/v0/define?term=Internet%20Friend","https://i.imgur.com/tLBnZ6n.jpg","https://i.imgur.com/qgZu7Sm.gifv","https://www.stereogum.com/1984421/the-low-key-legacy-of-duster-your-favorite-indie-bands-favorite-indie-band/franchises/sounding-board/","https://imgur.com/a/O0Ezm","https://78.media.tumblr.com/1e727241a78365d0a0cf565723bd7702/tumblr_oy2zbfRnTA1rhz81io1_500.jpg","https://en.wiktionary.org/wiki/Thesaurus:person");
+	$conn = new mysqli($servername, $username, $password, $dbname);
+
+	if ($conn->connect_error) {
+	    die("Connection failed: " . $conn->connect_error);
+	} 
+
+	$page2 = $page;
+	$page3 = $page2-1;
+	$page4 = $page2+1;
+	$page *= 10;
+
+	$result = $conn->query("SELECT COUNT(*) FROM `quotes`");
+	$row = $result->fetch_row();
+	$maxpage = substr($row[0], 0, -1);
+	echo "<div style=\"align:left;float:right;\"><a href=\"http://178.62.23.109/quotes/?p=0\">« <a href=\"http://178.62.23.109/quotes/?p=$page3\">‹</a> $page2 <a href=\"http://178.62.23.109/quotes/?p=$page4\">›</a> <a href=\"http://178.62.23.109/quotes/?p=$maxpage\">»</a></div>";
+
+	$sql = "SELECT id, quote, postdate FROM quotes ORDER BY id desc LIMIT $page,10";
+	$result = $conn->query($sql);	
+	if ($result->num_rows > 0) {
+	    // output data of each row
+	    while($row = $result->fetch_assoc()) {
+	    	$item = array_rand($items,1);
+			$item = $items["$item"];
+	    	$id = $row["id"];
+			echo "<a href=\"http://178.62.23.109/quotes/?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
+			Colorify($row["quote"]);
+			echo "</div><small>date: " . $row["postdate"]. " </small><hr />";
+		}
+	} else {
+	    echo "0 results";
+	}
+	$conn->close();
+
+?>
+<?php } else {
+
 
 	$conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -137,30 +187,30 @@ $items = array("https://i.imgur.com/gFbvY24.png", "https://upload.wikimedia.org/
 	    	$item = array_rand($items,1);
 			$item = $items["$item"];
 	    	$id = $row["id"];
-			echo "</label><a href=http://178.62.23.109/quotes/?id=$id class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div id=quote>";
+			echo "<div><a href=\"http://178.62.23.109/quotes/?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
 			Colorify($row["quote"]);
-			echo "</div><small>date: " . $row["postdate"]. " <a href='$item' target='_blank'>x</a></small><hr />";
+			echo "</div><small>date: " . $row["postdate"]. " </small><hr /></div>";
 		}
 	} else {
 	    echo "0 results";
 	}
 	$conn->close();
 
-} else { ?>
-
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="icon" type="image/png" href="favicon.png">
-<ul class="form-style-1">
-	<form method="post" method="index.php">
-	<li>
-		<label><h2><a href="http://178.62.23.109/quotes/"><font id="name">[Tactcat]</font></a> Hello, welcome to my <a href="http://178.62.23.109/quotes/?all" class="mod" style="color: #ED67EA;">quotes</a> bin!<hr></h2>
-        Your Quote <span class="required">*</span></label>
-        <textarea name="quote" id="field5" class="field-long field-textarea"></textarea>
-    </li>
-    <li>
-        <input type="submit" value="Submit" />
-    </li>
-    </form>
-</ul>
-
-<?php } ?>
+} ?>
+<script>
+function delay(fn, ms) {
+	let timer = 0
+	return function(...args) {
+		clearTimeout(timer)
+		timer = setTimeout(fn.bind(this, ...args), ms || 0)
+	}
+}
+jQuery.expr[':'].icontains = function(a, i, m) {
+  return jQuery(a).text().toUpperCase()
+      .indexOf(m[3].toUpperCase()) >= 0;
+};
+$(".search").keyup(delay(function(){$(".quote:not(:icontains('"+$(this).val()+"'))").parent().css("display","none");}, 500));
+$(".search").keyup(delay(function(){$(".quote:icontains('"+$(this).val()+"')").parent().css("display","initial");console.log("showing "+$(this).val())}, 500));
+</script>
+</div>
+</body>
