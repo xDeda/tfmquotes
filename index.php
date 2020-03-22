@@ -1,9 +1,9 @@
 <?php
 
-$servername = "localhost";
-$username = "USER";
-$password = "PASS";
-$dbname = "quotes";
+include_once 'database.php';
+include_once 'db_maintenance.php';  // perform database installation/upgrades
+
+$conn = Database::getInstance();
 
 $id = $_GET["id"];
 $submit = $_GET["submit"];
@@ -66,55 +66,40 @@ function mynl2br($text) {
 <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body><div class="form-style-1">
-<div style="display:inline-block;"><h2><a href="http://178.62.23.109/quotes/?submit"><span class="name">[Tactcat]</span></a> Hello, welcome to my <a href="http://178.62.23.109/quotes/" style="color: #ED67EA;border-bottom: 1px solid currentColor;">quotes</a> bin!</h2></div><input type="text" class="search" placeholder="search..." autocomplete="off" autofocus><font size="2"><a href="http://178.62.23.109/quotes/?submit"> » submit</a></font><hr>
+<div style="display:inline-block;"><h2><a href="./?submit"><span class="name">[Tactcat]</span></a> Hello, welcome to my <a href="." style="color: #ED67EA;border-bottom: 1px solid currentColor;">quotes</a> bin!</h2></div><input type="text" class="search" placeholder="search..." autocomplete="off" autofocus><font size="2"><a href="./?submit"> » submit</a></font><hr>
 
 <?php
 
 
 if (isset($_POST["quote"])) {
-	$link = mysqli_connect($servername, $username, $password, $dbname);
-
-	if($link === false){
-	    die("ERROR: Could not connect. " . mysqli_connect_error());
-	}
-
 	$quote = mynl2br($_POST["quote"]);
 	$quote = addslashes($quote);
 	$quote = strip_tags($quote, '<br>');
 
 	$sql = "INSERT INTO quotes (id, quote, postdate) VALUES (NULL, '$quote', CURRENT_TIMESTAMP)";
-	if(mysqli_query($link, $sql)){
-		$last_id = mysqli_insert_id($link);
+	if ($conn->query($sql)){
+		$last_id = $conn->insert_id;
 	    echo "Records added successfully. " . $last_id;
 	} else{
 	    echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 	}
 
-	mysqli_close($link);
-
-	header("Location: http://178.62.23.109/quotes/?id=$last_id");
+	header("Location: ./?id=$last_id");
 
 } elseif (isset($id)) {
-	
-	$conn = new mysqli($servername, $username, $password, $dbname);
-	if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-	} 
-
 	$sql = "SELECT id, quote, postdate FROM quotes WHERE id='$id'";
 	$result = $conn->query($sql);
 
 	if ($result->num_rows > 0) {
 		while($row = $result->fetch_assoc()) {
 			$id = $row["id"];
-			echo "<a href=\"http://178.62.23.109/quotes/?id=$id\" class=\"chat1\" style=\"color: #F0C5FE;\"> Quote ID: $id</a><div class=\"quote\">";
+			echo "<a href=\"./?id=$id\" class=\"chat1\" style=\"color: #F0C5FE;\"> Quote ID: $id</a><div class=\"quote\">";
 			Colorify($row["quote"]);
 			echo "</div><small>date: " . $row["postdate"]. "</small><br />";
 		}
 	} else {
 		echo "0 results";
 	}
-	$conn->close();
 
 ?>
     </li>
@@ -135,12 +120,6 @@ if (isset($_POST["quote"])) {
 
 <?php } elseif (isset($page)) { 
 
-	$conn = new mysqli($servername, $username, $password, $dbname);
-
-	if ($conn->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
-	} 
-
 	$page2 = $page;
 	$page3 = $page2-1;
 	$page4 = $page2+1;
@@ -149,7 +128,7 @@ if (isset($_POST["quote"])) {
 	$result = $conn->query("SELECT COUNT(*) FROM `quotes`");
 	$row = $result->fetch_row();
 	$maxpage = substr($row[0], 0, -1);
-	echo "<div style=\"align:left;float:right;\"><a href=\"http://178.62.23.109/quotes/?p=0\">« <a href=\"http://178.62.23.109/quotes/?p=$page3\">‹</a> $page2 <a href=\"http://178.62.23.109/quotes/?p=$page4\">›</a> <a href=\"http://178.62.23.109/quotes/?p=$maxpage\">»</a></div>";
+	echo "<div style=\"align:left;float:right;\"><a href=\"/.?p=0\">« <a href=\"./?p=$page3\">‹</a> $page2 <a href=\"./?p=$page4\">›</a> <a href=\"./?p=$maxpage\">»</a></div>";
 
 	$sql = "SELECT id, quote, postdate FROM quotes ORDER BY id desc LIMIT $page,10";
 	$result = $conn->query($sql);	
@@ -159,24 +138,16 @@ if (isset($_POST["quote"])) {
 	    	$item = array_rand($items,1);
 			$item = $items["$item"];
 	    	$id = $row["id"];
-			echo "<a href=\"http://178.62.23.109/quotes/?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
+			echo "<a href=\"./?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
 			Colorify($row["quote"]);
 			echo "</div><small>date: " . $row["postdate"]. " </small><hr />";
 		}
 	} else {
 	    echo "0 results";
 	}
-	$conn->close();
 
 ?>
 <?php } else {
-
-
-	$conn = new mysqli($servername, $username, $password, $dbname);
-
-	if ($conn->connect_error) {
-	    die("Connection failed: " . $conn->connect_error);
-	} 
 	
 	$sql = "SELECT id, quote, postdate FROM quotes ORDER BY id desc";
 	$result = $conn->query($sql);
@@ -187,14 +158,13 @@ if (isset($_POST["quote"])) {
 	    	$item = array_rand($items,1);
 			$item = $items["$item"];
 	    	$id = $row["id"];
-			echo "<div><a href=\"http://178.62.23.109/quotes/?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
+			echo "<div><a href=\"./?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
 			Colorify($row["quote"]);
 			echo "</div><small>date: " . $row["postdate"]. " </small><hr /></div>";
 		}
 	} else {
 	    echo "0 results";
 	}
-	$conn->close();
 
 } ?>
 <script>
