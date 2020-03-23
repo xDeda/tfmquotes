@@ -7,11 +7,6 @@ body {
 
 a {
     text-decoration: none;
-    color: white;
-}
-
-a:visited { 
-    color: pink;
 }
 
 h2 {
@@ -61,6 +56,10 @@ textarea, .quote {
     white-space: pre-wrap;
     word-break: break-all;
     word-wrap: break-word;
+}
+
+.idtext {
+    color: #F0C5FE;
 }
 
 .form-style-1 textarea:focus, .quote:hover {
@@ -192,5 +191,5 @@ textarea, .quote {
 }
 
 .server {
-    color: #12DA8A; /* • [en] Don't forget to nominate Transformice for "the Best Use Of A Farm Animal Award"! * /
+    color: #12DA8A; /* • [en] Don't forget to nominate Transformice for "the Best Use Of A Farm Animal Award"! */
 }

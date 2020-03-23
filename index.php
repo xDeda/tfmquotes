@@ -5,9 +5,9 @@ include_once 'db_maintenance.php';  // perform database installation/upgrades
 
 $conn = Database::getInstance();
 
-$id = $_GET["id"];
-$submit = $_GET["submit"];
-$page = $_GET["p"];
+$v_id = $_GET["id"];
+$v_submit = $_GET["submit"];
+$v_page = $_GET["p"];
 
 function Colorify($q) {
 	$q = explode("<br />", $q);
@@ -60,17 +60,18 @@ function mynl2br($text) {
 ?>
 <!DOCTYPE html>
 <head>
-<title>TFM Quotes bin</title>
-<script src="jquery-3.4.1.min.js"></script>
-<link rel="stylesheet" type="text/css" href="style.css">
-<link rel="icon" type="image/png" href="favicon.png">
+    <title>TFM Quotes bin</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body><div class="form-style-1">
-<div style="display:inline-block;"><h2><a href="./?submit"><span class="name">[Tactcat]</span></a> Hello, welcome to my <a href="." style="color: #ED67EA;border-bottom: 1px solid currentColor;">quotes</a> bin!</h2></div><input type="text" class="search" placeholder="search..." autocomplete="off" autofocus><font size="2"><a href="./?submit"> » submit</a></font><hr>
+<div style="display:inline-block;"><h2><a href="./?submit"><span class="name">[Tactcat]</span></a> Hello, welcome to my <a href="." class="quoteslink" style="color: #ED67EA;border-bottom: 1px solid currentColor;">quotes</a> bin!</h2></div><input type="text" class="search" placeholder="search..." autocomplete="off" autofocus><font size="2"><a href="./?submit" style="color:pink"> » submit</a></font><hr>
+<div id="content">
 
 <?php
 
-
+$postproc = false;
 if (isset($_POST["quote"])) {
 	$quote = mynl2br($_POST["quote"]);
 	$quote = addslashes($quote);
@@ -86,87 +87,20 @@ if (isset($_POST["quote"])) {
 
 	header("Location: ./?id=$last_id");
 
-} elseif (isset($id)) {
-	$sql = "SELECT id, quote, postdate FROM quotes WHERE id='$id'";
-	$result = $conn->query($sql);
-
-	if ($result->num_rows > 0) {
-		while($row = $result->fetch_assoc()) {
-			$id = $row["id"];
-			echo "<a href=\"./?id=$id\" class=\"chat1\" style=\"color: #F0C5FE;\"> Quote ID: $id</a><div class=\"quote\">";
-			Colorify($row["quote"]);
-			echo "</div><small>date: " . $row["postdate"]. "</small><br />";
-		}
-	} else {
-		echo "0 results";
-	}
-
-?>
-    </li>
-</ul>
-<?php
-} elseif (isset($submit)) {
+} elseif (isset($v_submit)) {
 ?>
         Your Quote <span class="required">*</span>
      	<form method="post" method="index.php">
         <textarea name="quote" id="field5" class="field-long field-textarea"></textarea>
-    </li>
-    <li>
         <input type="submit" value="Submit" />
-    </li>
     </form>
-</ul>
 
-
-<?php } elseif (isset($page)) { 
-
-	$page2 = $page;
-	$page3 = $page2-1;
-	$page4 = $page2+1;
-	$page *= 10;
-
-	$result = $conn->query("SELECT COUNT(*) FROM `quotes`");
-	$row = $result->fetch_row();
-	$maxpage = substr($row[0], 0, -1);
-	echo "<div style=\"align:left;float:right;\"><a href=\"/.?p=0\">« <a href=\"./?p=$page3\">‹</a> $page2 <a href=\"./?p=$page4\">›</a> <a href=\"./?p=$maxpage\">»</a></div>";
-
-	$sql = "SELECT id, quote, postdate FROM quotes ORDER BY id desc LIMIT $page,10";
-	$result = $conn->query($sql);	
-	if ($result->num_rows > 0) {
-	    // output data of each row
-	    while($row = $result->fetch_assoc()) {
-	    	$item = array_rand($items,1);
-			$item = $items["$item"];
-	    	$id = $row["id"];
-			echo "<a href=\"./?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
-			Colorify($row["quote"]);
-			echo "</div><small>date: " . $row["postdate"]. " </small><hr />";
-		}
-	} else {
-	    echo "0 results";
-	}
-
+<?php 
+} else {
+    $postproc = true;
+}
 ?>
-<?php } else {
-	
-	$sql = "SELECT id, quote, postdate FROM quotes ORDER BY id desc";
-	$result = $conn->query($sql);
-	
-	if ($result->num_rows > 0) {
-	    // output data of each row
-	    while($row = $result->fetch_assoc()) {
-	    	$item = array_rand($items,1);
-			$item = $items["$item"];
-	    	$id = $row["id"];
-			echo "<div><a href=\"./?id=$id\" class=\"chat2\" style=\"color: #F0C5FE;\">Quote ID: $id</a><div class=\"quote\">";
-			Colorify($row["quote"]);
-			echo "</div><small>date: " . $row["postdate"]. " </small><hr /></div>";
-		}
-	} else {
-	    echo "0 results";
-	}
-
-} ?>
+</div>
 <script>
 function delay(fn, ms) {
 	let timer = 0
@@ -181,6 +115,115 @@ jQuery.expr[':'].icontains = function(a, i, m) {
 };
 $(".search").keyup(delay(function(){$(".quote:not(:icontains('"+$(this).val()+"'))").parent().css("display","none");}, 500));
 $(".search").keyup(delay(function(){$(".quote:icontains('"+$(this).val()+"')").parent().css("display","initial");console.log("showing "+$(this).val())}, 500));
+$(".quoteslink").click(function(event) {
+    ShowAll(true);
+    history.pushState(null, null, '.');
+    event.preventDefault();
+});
+
+function eventPostprocDone() {
+    $(".idtext").click(function(event) {
+        var id = $(this).data("id");
+        ShowId(id, true);
+        history.pushState({id: id}, null, '?id=' + id);
+        event.preventDefault();
+    });
+}
+    
+function ShowId(id, push = false) {
+    $.ajax({
+        type: 'POST',
+        url: 'quotes_get.php',
+        data: {action: 'get', id: id},
+        success: function(response){
+            var quotes = JSON.parse(response);
+            var shtml = "";
+
+            if (quotes.length == 0) {
+                shtml += "0 results";
+            } else {
+                let row = quotes[0];
+				shtml += "<a href=\"./?id="+row.id+"\" class=\"idtext\" data-id=\""+row.id+"\"> Quote ID: "+row.id+"</a><div class=\"quote\">";
+			    shtml += row.quote;
+		    	shtml += "</div><small>date: " + row.postdate + "</small><br />";
+			}
+			$('#content').html(shtml);
+			eventPostprocDone();
+        }
+    });
+}
+
+/*function ShowPage(num, push = false) {
+    var page2 = num;
+	var page3 = page2-1;
+	var page4 = page2+1;
+
+	$result = $conn->query("SELECT COUNT(*) FROM `quotes`");
+	$row = $result->fetch_row();
+	$maxpage = substr($row[0], 0, -1);
+	
+    $.ajax({
+        type: 'POST',
+        url: 'quotes_get.php',
+        data: {action: 'get', limit: 10, skip: num*10},
+        success: function(response){
+            var quotes = JSON.parse(response);
+            var shtml = "";
+
+            if (quotes.length == 0) {
+                shtml += "0 results";
+            } else {
+                shtml += "<div style=\"align:left;float:right;\"><a href=\"/.?p=0\">« <a href=\"./?p=$page3\">‹</a> $page2 <a href=\"./?p=$page4\">›</a> <a href=\"./?p=$maxpage\">»</a></div>";
+                for (var i = 0; i < quotes.length; i++) {
+                    let row = quotes[i];
+                    shtml += "<div><a href=\"./?id="+row.id+"\" class=\"idtext\">Quote ID: "+row.id+"</a><div class=\"quote\">";
+			        shtml += row.quote;
+			        shtml += "</div><small>date: " + row.postdate + " </small><hr /></div>";
+                }
+			}
+			$('#content').html(shtml);
+			eventPostprocDone();
+        }
+    });
+
+}*/
+
+function ShowAll(push = false) {
+    $.ajax({
+        type: 'POST',
+        url: 'quotes_get.php',
+        data: {action: 'get'},
+        success: function(response){
+            var quotes = JSON.parse(response);
+            var shtml = "";
+
+            if (quotes.length == 0) {
+                shtml += "0 results";
+            } else {
+                for (var i = 0; i < quotes.length; i++) {
+                    let row = quotes[i];
+                    shtml += "<div><a href=\"./?id="+row.id+"\" class=\"idtext\" data-id=\""+row.id+"\">Quote ID: "+row.id+"</a><div class=\"quote\">";
+			        shtml += row.quote;
+			        shtml += "</div><small>date: " + row.postdate + " </small><hr /></div>";
+                }
+			}
+			$('#content').html(shtml);
+			eventPostprocDone();
+        }
+    });
+} 
+
+<?php
+if ($postproc) {
+    if (isset($v_id)) {
+    	echo "ShowId($v_id)";
+    } elseif (isset($v_page)) { 
+        echo "ShowPage($v_page);";
+    } else {
+        echo "ShowAll();";
+    }
+}
+?>
 </script>
 </div>
 </body>
