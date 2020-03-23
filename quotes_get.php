@@ -11,8 +11,7 @@ $skip = $_REQUEST["skip"];
 
 function Colorify($q) {
     $buf = "";
-	$q = explode("<br />", $q);
-	foreach ($q as $qq) {
+	foreach (preg_split("/((\r?\n)|(\r\n?))/", $q) as $qq) {
 		if (strpos($qq, "• [") === 0 && strpos($qq, "• [Moderation]") !== 0 && strpos($qq, "• [0") !== 0 && strpos($qq, "• [1") !== 0 && strpos($qq, "• [2") !== 0) {
 			$qq = str_replace("• [", "<span class=\"tn\">• [", $qq);
 			$qq = str_replace("]", "]</span><span class=\"tc\">", $qq) . "</span><br />";
