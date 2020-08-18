@@ -68,7 +68,7 @@ if ($action == "get") {
     
     $array = array();
 	while ($row = $result->fetch_assoc()) {
-	    $row['quote'] = Colorify($row['quote']);  // TODO: temporarily while we migrate colorify to js
+	    //$row['quote'] = Colorify($row['quote']);  // TODO: temporarily while we migrate colorify to js
 		$array[] = $row;
 	}
 	echo json_encode($array);

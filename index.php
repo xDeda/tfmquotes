@@ -15,6 +15,7 @@ $v_page = $_GET["p"];
     <title>TFM Quotes bin</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="tfmcolors.css">
     <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body><div class="form-style-1">
@@ -96,7 +97,7 @@ function ShowId(id, push = false) {
             } else {
                 let row = quotes[0];
 				shtml += "<a href=\"./?id="+row.id+"\" class=\"idtext\" data-id=\""+row.id+"\"> Quote ID: "+row.id+"</a><div class=\"quote\">";
-			    shtml += row.quote.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
+			    shtml += Colorify(row.quote);
 		    	shtml += "</div><small>date: " + row.postdate + "</small><br />";
 			}
 			$('#content').html(shtml);
@@ -155,7 +156,7 @@ function ShowAll(push = false) {
                 for (var i = 0; i < quotes.length; i++) {
                     let row = quotes[i];
                     shtml += "<div><a href=\"./?id="+row.id+"\" class=\"idtext\" data-id=\""+row.id+"\">Quote ID: "+row.id+"</a><div class=\"quote\">";
-			        shtml += row.quote;
+			        shtml += Colorify(row.quote);
 			        shtml += "</div><small>date: " + row.postdate + " </small><hr /></div>";
                 }
 			}
@@ -163,7 +164,107 @@ function ShowAll(push = false) {
 			eventPostprocDone();
         }
     });
-} 
+}
+
+function ignFormat(name) {
+    const r = /^([A-Za-z_\d]+)(#\d{4})$/;
+    if (name.match(r)) {
+        return name.replace(r, `$1<span class="igntag">$2</span>`);
+    }
+    return name;
+}
+
+function Colorify(str) {
+    var sp = str.split("\n");
+    var nstrs = [];
+    for (let i = 0; i < sp.length; i++) {
+        let s = sp[i];
+        
+        do {
+            let m = null;
+            // (Dis)connect message
+            m = s.match(/^(.+) (has disconnected|just connected).$/);
+            if (m) {
+                let name = ignFormat(m[1]);
+                let t = m[2];
+                s = `<span class="BL">${name} ${t}.</span>`;
+                break;
+            }
+            
+            /* Room entry */
+            m = s.match(/^You just entered room .+$/);
+            if (m) {
+                s = `<span class="BL">${m[0]}</span>`;
+                break;
+            }
+            
+            /* Moderation / Admin */
+            /* will conflict if admin texts in tribe or is not #0001 */
+            m = s.match(/^• \[(?:Moderation|.+#0001)\] .+$/);
+            if (m) {
+                s = `<span class="ROSE">${m[0]}</span>`;
+                break;
+            }
+            
+            /* Tribe chat */
+            /* will conflict if #0001 speaks in tribe */
+            m = s.match(/^• (?:\[(.*)\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            if (m) {
+                let time = m[1];
+                let name = ignFormat(m[2]);
+                let rest = m[3];
+                s = `<span class="VP">• `;
+                if (time) {
+                    s += `[${time}] `;
+                }
+                s += `[${name}]</span><span class="T">${rest}</span>`;
+                break;
+            }
+            
+            /* Whispers */
+            m = s.match(/^(<|>) (?:\[(.+)\] )?(?:\[(.{2})\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            if (m) {
+                let symbol = m[1];
+                let time = m[2];
+                let commu = m[3];
+                let name = ignFormat(m[4]);
+                let rest = m[5];
+                let is_outgoing = symbol=="<";
+                
+                let col_class = (is_outgoing ? "out" : "in") + "_whisper";
+                name = is_outgoing ? name : `<span class="in_whisper_name">${name}</span>`;
+                
+                s = `<span class="${col_class}">${symbol} `;
+                if (time) {
+                    s += `[${time}] `;
+                }
+                if (commu) {
+                    s += `[${commu}] `;
+                }
+                s += `[${name}]${rest}</span>`;
+                break;
+            }
+            
+            /* Basic room text */
+            m = s.match(/^(?:\[(.*)\] )?\[(.+)\](.+)$/);
+            if (m) {
+                let time = m[1];
+                let name = ignFormat(m[2]);
+                let rest = m[3];
+                s = `<span class="V">`;
+                if (time) {
+                    s += `[${time}] `;
+                }
+                s += `[${name}]</span>${rest}`;
+                break;
+            }
+        } while (false);
+        
+        nstrs.push(s);
+    }
+
+    return nstrs.join("\n");
+}
 
 <?php
 if ($postproc) {

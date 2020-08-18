@@ -1,8 +1,7 @@
 body {
-	margin: 45px 300px 45px 300px;
 	color: #C2C2DA;
 	background-color: #402A1D;
-    font-family: Arial, sans-serif;
+	font-family: Arial, sans-serif;
 }
 
 a {
@@ -20,9 +19,8 @@ hr {
 }
 
 .form-style-1 {
-	margin: 0px;
+	margin: 45px 300px;
     width: 800px;
-    height: 500px;
 }
 
 .form-style-1 li {
@@ -37,6 +35,13 @@ hr {
     padding:0px;
     display:block;
     font-weight: bold;
+}
+
+/* quote text style */
+.quote {
+    font-family: Verdana;
+    font-size: 14px;
+    line-height: 18px;
 }
 
 textarea, .quote {
