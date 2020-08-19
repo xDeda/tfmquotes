@@ -271,11 +271,11 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             
             /* Tribe chat */
             /* will conflict if #0001 speaks in tribe */
-            m = s.match(/^• (?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.+)$/);
+            m = s.match(/^• (?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.*)$/);
             if (m) {
                 let time = m[1];
                 let name = ignFormat(m[2], ignfmt.CLICKABLE);
-                let rest = m[3];
+                let rest = m[3] || "";
                 s = `<span class="tribe1">• `;
                 if (time) {
                     s += `[${time}] `;
@@ -285,13 +285,13 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             }
             
             /* Whispers */
-            m = s.match(/^(<|>) (?:\[([0-9:]+)\] )?(?:\[(.{2})\] )?\[([A-Za-z_#\d]+)\](.+)$/);
+            m = s.match(/^(<|>) (?:\[([0-9:]+)\] )?(?:\[(.{2})\] )?\[([A-Za-z_#\d]+)\](.*)$/);
             if (m) {
                 let symbol = m[1];
                 let time = m[2];
                 let commu = m[3];
                 let name = ignFormat(m[4], ignfmt.CLICKABLE);
-                let rest = m[5];
+                let rest = m[5] || "";
                 let is_outgoing = symbol=="<";
                 
                 let col_class = (is_outgoing ? "out" : "in") + "_whisper";
@@ -314,12 +314,12 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
                 s = `<span class="chat1">${m[1]}</span><span class="chat2">${m[2]}</span>`;
                 break;
             }
-            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.{2})] \[([A-Za-z_#\d]+)\](.+)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.{2})] \[([A-Za-z_#\d]+)\](.*)$/);
             if (m) {
                 let time = m[1];
                 let commu = m[2];
                 let name = ignFormat(m[3], ignfmt.CLICKABLE);
-                let rest = m[4];
+                let rest = m[4] || "";
                 s = `<span class="chat1">`;
                 if (time) {
                     s += `[${time}] `;
@@ -357,11 +357,11 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             }
             
             /* System message */
-            m = s.match(/^(?:\[([0-9:]+)\] )?\[•\](.+)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[•\](.*)$/);
             if (m) {
                 let time = m[1];
                 let system = ignFormat("•", ignfmt.CLICKABLE);
-                let rest = m[2];
+                let rest = m[2] || "";
                 s = `<span class="V">`;
                 if (time) {
                     s += `[${time}] `;
@@ -385,11 +385,11 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             }
             
             /* Basic room text */
-            m = s.match(/^(?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.+)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.*)$/);
             if (m) {
                 let time = m[1];
                 let name = ignFormat(m[2], ignfmt.CLICKABLE);
-                let rest = m[3];
+                let rest = m[3] || "";
                 s = `<span class="V">`;
                 if (time) {
                     s += `[${time}] `;
