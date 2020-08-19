@@ -1,6 +1,9 @@
 .igntag {
-    color: #606090; /* <G> */
     font-size: 12px;
+}
+
+.igntag.igncolor {
+    color: #606090; /* <G> */
 }
 
 /* inherit color if tag is under link and being hovered */

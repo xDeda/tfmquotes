@@ -184,13 +184,23 @@ function ShowAll(push = histType.NONE) {
     });
 }
 
-function ignFormat(name, link = false) {
+var ignfmt = {
+    NONE: 0,
+    LINK: 1 << 0,
+    COLOR: 1 << 1,
+}
+ignfmt.CLICKABLE = ignfmt.LINK | ignfmt.COLOR;
+
+function ignFormat(name, flags = ignfmt.COLOR) {
     const r = /^([A-Za-z_\d]+)(#\d{4})$/;
     var ret = name;
     if (name.match(r)) {
-        ret = name.replace(r, `$1<span class="igntag">$2</span>`);
+        let c = "igntag";
+        if (flags & ignfmt.COLOR)
+            c += " igncolor";
+        ret = name.replace(r, `$1<span class="${c}">$2</span>`);
     }
-    if (link) {
+    if (flags & ignfmt.LINK) {
         let link = "https://atelier801.com/profile?pr=" + encodeURIComponent(name);
         ret = `<a target="_blank" href="${link}" class="tfmlink">${ret}</a>`;
     }
@@ -264,7 +274,7 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             m = s.match(/^• (?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.+)$/);
             if (m) {
                 let time = m[1];
-                let name = ignFormat(m[2], true);
+                let name = ignFormat(m[2], ignfmt.CLICKABLE);
                 let rest = m[3];
                 s = `<span class="tribe1">• `;
                 if (time) {
@@ -280,7 +290,7 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
                 let symbol = m[1];
                 let time = m[2];
                 let commu = m[3];
-                let name = ignFormat(m[4], true);
+                let name = ignFormat(m[4], ignfmt.CLICKABLE);
                 let rest = m[5];
                 let is_outgoing = symbol=="<";
                 
@@ -308,7 +318,7 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             if (m) {
                 let time = m[1];
                 let commu = m[2];
-                let name = ignFormat(m[3], true);
+                let name = ignFormat(m[3], ignfmt.CLICKABLE);
                 let rest = m[4];
                 s = `<span class="chat1">`;
                 if (time) {
@@ -322,16 +332,20 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             }
             
             /* Now your shaman! */
-            m = s.match(/^([A-Za-z_\d]+)( is now your shaman, follow her!)$/);
+            m = s.match(/^([A-Za-z_#\d]+)( is now your shaman, follow her!)$/);
             if (m) {
-                s = `<span class="CH">${m[1]}</span><span class="BL">${m[2]}</span>`;
+                let name = ignFormat(m[1], ignfmt.NONE);
+                let rest = m[2]
+                s = `<span class="CH">${name}</span><span class="BL">${rest}</span>`;
                 break;
             }
             
             /* Thanks shaman */
-            m = s.match(/^Thanks to ([A-Za-z_\d]+)(, we gathered \d cheese!)$/);
+            m = s.match(/^Thanks to ([A-Za-z_#\d]+)(, we gathered \d cheese!)$/);
             if (m) {
-                s = `<span class="BL">Thanks to <span class="V">${m[1]}</span>${m[2]}</span>`;
+                let name = ignFormat(m[1], ignfmt.NONE);
+                let rest = m[2]
+                s = `<span class="BL">Thanks to <span class="V">${name}</span>${rest}</span>`;
                 break;
             }
             
@@ -346,7 +360,7 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             m = s.match(/^(?:\[([0-9:]+)\] )?\[•\](.+)$/);
             if (m) {
                 let time = m[1];
-                let system = ignFormat("•", true)
+                let system = ignFormat("•", ignfmt.CLICKABLE);
                 let rest = m[2];
                 s = `<span class="V">`;
                 if (time) {
@@ -374,7 +388,7 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             m = s.match(/^(?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.+)$/);
             if (m) {
                 let time = m[1];
-                let name = ignFormat(m[2], true);
+                let name = ignFormat(m[2], ignfmt.CLICKABLE);
                 let rest = m[3];
                 s = `<span class="V">`;
                 if (time) {
