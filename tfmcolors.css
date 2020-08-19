@@ -1,5 +1,5 @@
 .igntag {
-    color: #606090;
+    color: #606090; /* <G> */
     font-size: 12px;
 }
 
@@ -57,4 +57,8 @@
 
 .J {
     color: #BABD2F;
+}
+
+.G {
+    color: #606090;
 }

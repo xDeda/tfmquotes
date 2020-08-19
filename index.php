@@ -179,11 +179,21 @@ function ignFormat(name, link = false) {
     return ret;
 }
 
-function Colorify(str) {
+function Colorify(str, bt_format = true /* buildtool is the superior module */) {
     var sp = str.split("\n");
     var nstrs = [];
     for (let i = 0; i < sp.length; i++) {
         let s = sp[i];
+        
+        /* buildtool text formatting */
+        if (bt_format && s[0] == "Ξ") {
+            if (s.match(/(?:left|entered) the room/)
+                    || s.match(/is (?:banned|an admin) now!/)) {
+                s = `<span class="J">${s}</span>`;
+            } else if (s.match(/\[.+?\] !/)) {
+                s = `<span class="G">${s}</span>`;
+            }
+        } else
         
         do {
             let m = null;
