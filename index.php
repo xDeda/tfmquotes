@@ -68,22 +68,34 @@ jQuery.expr[':'].icontains = function(a, i, m) {
 };
 $(".search").keyup(delay(function(){$(".quote:not(:icontains('"+$(this).val()+"'))").parent().css("display","none");}, 500));
 $(".search").keyup(delay(function(){$(".quote:icontains('"+$(this).val()+"')").parent().css("display","initial");console.log("showing "+$(this).val())}, 500));
+
+window.onpopstate = function(event) {
+    if (event.state == null)
+        ShowAll();
+    else
+        ShowId(event.state.id);
+}
+
 $(".quoteslink").click(function(event) {
-    ShowAll(true);
-    history.pushState(null, null, '.');
+    ShowAll(histType.PUSH);
     event.preventDefault();
 });
 
 function eventPostprocDone() {
     $(".idtext").click(function(event) {
         var id = $(this).data("id");
-        ShowId(id, true);
-        history.pushState({id: id}, null, '?id=' + id);
+        ShowId(id, histType.PUSH);
         event.preventDefault();
     });
 }
-    
-function ShowId(id, push = false) {
+
+const histType = {
+    NONE: 0,
+    PUSH: 1,
+    REPLACE: 2,
+}
+
+function ShowId(id, push = histType.NONE) {
     $.ajax({
         type: 'POST',
         url: 'quotes_get.php',
@@ -102,6 +114,10 @@ function ShowId(id, push = false) {
 			}
 			$('#content').html(shtml);
 			eventPostprocDone();
+			if (push == histType.PUSH)
+			    history.pushState({id: id}, null, '?id=' + id);
+			else if (push == histType.REPLACE)
+			    history.replaceState({id: id}, null, '?id=' + id);
         }
     });
 }
@@ -141,7 +157,7 @@ function ShowId(id, push = false) {
 
 }*/
 
-function ShowAll(push = false) {
+function ShowAll(push = histType.NONE) {
     $.ajax({
         type: 'POST',
         url: 'quotes_get.php',
@@ -162,6 +178,8 @@ function ShowAll(push = false) {
 			}
 			$('#content').html(shtml);
 			eventPostprocDone();
+			if (push == histType.PUSH)
+			    history.pushState(null, null, '.');
         }
     });
 }
@@ -376,7 +394,7 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
 <?php
 if ($postproc) {
     if (isset($v_id)) {
-    	echo "ShowId($v_id)";
+    	echo "ShowId($v_id, histType.REPLACE)";
     } elseif (isset($v_page)) { 
         echo "ShowPage($v_page);";
     } else {
