@@ -182,6 +182,7 @@ function Colorify(str) {
         
         do {
             let m = null;
+            
             // (Dis)connect message
             m = s.match(/^(.+) (has disconnected|just connected).$/);
             if (m) {
@@ -195,6 +196,7 @@ function Colorify(str) {
             m = s.match(/^You just entered room .+$/);
             if (m) {
                 s = `<span class="BL">${m[0]}</span>`;
+                s = s.replace(/(\/room RoomName)/, `<span class="V">$1</span>`);
                 break;
             }
             
@@ -206,9 +208,16 @@ function Colorify(str) {
                 break;
             }
             
+            /* SERVER message */
+            m = s.match(/^• \[SERVER\].+$/);
+            if (m) {
+                s = `<span class="ROSE"><b>${m[0]}</b></span>`;
+                break;
+            }
+            
             /* Tribe chat */
             /* will conflict if #0001 speaks in tribe */
-            m = s.match(/^• (?:\[(.*)\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            m = s.match(/^• (?:\[([0-9:]+)\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
             if (m) {
                 let time = m[1];
                 let name = ignFormat(m[2]);
@@ -222,7 +231,7 @@ function Colorify(str) {
             }
             
             /* Whispers */
-            m = s.match(/^(<|>) (?:\[(.+)\] )?(?:\[(.{2})\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            m = s.match(/^(<|>) (?:\[([0-9:]+)\] )?(?:\[(.{2})\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
             if (m) {
                 let symbol = m[1];
                 let time = m[2];
@@ -245,8 +254,72 @@ function Colorify(str) {
                 break;
             }
             
+            /* Chat channel */
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[•] You have joined the channel.+$/);
+            if (m) {
+                break;
+            }
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.{2})] \[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            if (m) {
+                let time = m[1];
+                let commu = m[2];
+                let name = ignFormat(m[3]);
+                let rest = m[4];
+                s = "";
+                if (time) {
+                    s += `[${time}] `;
+                }
+                if (commu) {
+                    s += `[${commu}] `;
+                }
+                s += `[${name}]${rest}</span>`;
+                break;
+            }
+            
+            /* Now your shaman! */
+            m = s.match(/^([A-Za-z_\d]+)( is now your shaman, follow her!)$/);
+            if (m) {
+                s = `<span class="CH">${m[1]}</span><span class="BL">${m[2]}</span>`;
+                break;
+            }
+            
+            /* Thanks shaman */
+            m = s.match(/^Thanks to ([A-Za-z_\d]+)(, we gathered \d cheese!)$/);
+            if (m) {
+                s = `<span class="BL">Thanks to <span class="V">${m[1]}</span>${m[2]}</span>`;
+                break;
+            }
+            
+            /* Cheeeeeese *-* */
+            m = s.match(/^Cheeeeeese \*-\* \(([0-9]+(?:\.[0-9]+)?s)\)$/);
+            if (m) {
+                s = `<span class="BL">Cheeeeeese *-* (<span class="V">${m[1]}</span>)</span>`;
+                break;
+            }
+            
+            /* System message */
+            m = s.match(/^((?:\[[0-9:]+\] )?\[•])(.+)$/);
+            if (m) {
+                s = `<span class="V">${m[1]}</span><span class="BL">${m[2]}</span>`;
+                break;
+            }
+            
+            /* You're the shaman! */
+            m = s.match(/^You're the shaman! Help your disciples to get the cheese!$/);
+            if (m) {
+                s = `<span class="J">${m[0]}</span>`;
+                break;
+            }
+            
+            /* No cheese for you */
+            m = s.match(/^No cheese for you! \^_\^$/);
+            if (m) {
+                s = `<span class="BL">${m[0]}</span>`;
+                break;
+            }
+            
             /* Basic room text */
-            m = s.match(/^(?:\[(.*)\] )?\[(.+)\](.+)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.+?)\](.+)$/);
             if (m) {
                 let time = m[1];
                 let name = ignFormat(m[2]);
