@@ -166,12 +166,17 @@ function ShowAll(push = false) {
     });
 }
 
-function ignFormat(name) {
+function ignFormat(name, link = false) {
     const r = /^([A-Za-z_\d]+)(#\d{4})$/;
+    var ret = name;
     if (name.match(r)) {
-        return name.replace(r, `$1<span class="igntag">$2</span>`);
+        ret = name.replace(r, `$1<span class="igntag">$2</span>`);
     }
-    return name;
+    if (link) {
+        let link = "https://atelier801.com/profile?pr=" + encodeURIComponent(name);
+        ret = `<a target="_blank" href="${link}" class="tfmlink">${ret}</a>`;
+    }
+    return ret;
 }
 
 function Colorify(str) {
@@ -220,9 +225,9 @@ function Colorify(str) {
             m = s.match(/^• (?:\[([0-9:]+)\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
             if (m) {
                 let time = m[1];
-                let name = ignFormat(m[2]);
+                let name = ignFormat(m[2], true);
                 let rest = m[3];
-                s = `<span class="VP">• `;
+                s = `<span class="tribe1">• `;
                 if (time) {
                     s += `[${time}] `;
                 }
@@ -236,7 +241,7 @@ function Colorify(str) {
                 let symbol = m[1];
                 let time = m[2];
                 let commu = m[3];
-                let name = ignFormat(m[4]);
+                let name = ignFormat(m[4], true);
                 let rest = m[5];
                 let is_outgoing = symbol=="<";
                 
@@ -255,24 +260,25 @@ function Colorify(str) {
             }
             
             /* Chat channel */
-            m = s.match(/^(?:\[([0-9:]+)\] )?\[•] You have joined the channel.+$/);
+            m = s.match(/^((?:\[[0-9:]+\] )?\[•])( You have joined the channel.+)$/);
             if (m) {
+                s = `<span class="chat1">${m[1]}</span><span class="chat2">${m[2]}</span>`;
                 break;
             }
             m = s.match(/^(?:\[([0-9:]+)\] )?\[(.{2})] \[([A-Za-z_\d]+#\d{4})\](.+)$/);
             if (m) {
                 let time = m[1];
                 let commu = m[2];
-                let name = ignFormat(m[3]);
+                let name = ignFormat(m[3], true);
                 let rest = m[4];
-                s = "";
+                s = `<span class="chat1">`;
                 if (time) {
                     s += `[${time}] `;
                 }
                 if (commu) {
                     s += `[${commu}] `;
                 }
-                s += `[${name}]${rest}</span>`;
+                s += `[${name}]</span><span class="chat2">${rest}</span>`;
                 break;
             }
             
@@ -322,7 +328,7 @@ function Colorify(str) {
             m = s.match(/^(?:\[([0-9:]+)\] )?\[(.+?)\](.+)$/);
             if (m) {
                 let time = m[1];
-                let name = ignFormat(m[2]);
+                let name = ignFormat(m[2], true);
                 let rest = m[3];
                 s = `<span class="V">`;
                 if (time) {
