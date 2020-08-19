@@ -385,7 +385,7 @@ function Colorify(str, bt_format = true /* buildtool is the superior module */) 
             }
             
             /* Basic room text */
-            m = s.match(/^(?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.*)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.+?)\](.*)$/);
             if (m) {
                 let time = m[1];
                 let name = ignFormat(m[2], ignfmt.CLICKABLE);
