@@ -1,0 +1,64 @@
+.igntag {
+    color: #606090; /* <G> */
+    font-size: 12px;
+}
+
+/* inherit color if tag is under link and being hovered */
+.tfmlink:hover>.igntag {
+    color: inherit;
+}
+
+.tfmlink {
+    color: inherit;
+}
+.tfmlink:hover {
+    color: #2ECF73; /* tfm hover link color (<VP>) */
+}
+
+.out_whisper {
+    color: #EDCC8D;
+}
+
+.in_whisper {
+    color: #F0A78E;
+}
+.in_whisper_name {
+    color: #E68D43;
+}
+
+/* • [22:22] [Realmapcrew#0000] */
+.tribe1 {
+    color: #2EBA7E;
+}
+
+.BL {
+    color: #6C77C1;
+}
+
+.ROSE {
+    color: #ED67EA;
+}
+
+.V {
+    color: #009D9D;
+}
+
+.T {
+    color: #A4CF9E;
+}
+
+.VP {
+    color: #2ECF73;
+}
+
+.CH {
+    color: #98E2EB;
+}
+
+.J {
+    color: #BABD2F;
+}
+
+.G {
+    color: #606090;
+}

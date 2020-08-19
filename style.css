@@ -1,17 +1,11 @@
 body {
-	margin: 45px 300px 45px 300px;
 	color: #C2C2DA;
 	background-color: #402A1D;
-    font-family: Arial, sans-serif;
+	font-family: Arial, sans-serif;
 }
 
 a {
     text-decoration: none;
-    color: white;
-}
-
-a:visited { 
-    color: pink;
 }
 
 h2 {
@@ -25,9 +19,8 @@ hr {
 }
 
 .form-style-1 {
-	margin: 0px;
+	margin: 45px 300px;
     width: 800px;
-    height: 500px;
 }
 
 .form-style-1 li {
@@ -42,6 +35,13 @@ hr {
     padding:0px;
     display:block;
     font-weight: bold;
+}
+
+/* quote text style */
+.quote {
+    font-family: Verdana;
+    font-size: 14px;
+    line-height: 18px;
 }
 
 textarea, .quote {
@@ -59,8 +59,10 @@ textarea, .quote {
     -o-transition: all 0.30s ease-in-out;
     outline: none;
     white-space: pre-wrap;
-    word-break: break-all;
-    word-wrap: break-word;
+}
+
+.idtext {
+    color: #F0C5FE;
 }
 
 .form-style-1 textarea:focus, .quote:hover {
@@ -69,8 +71,6 @@ textarea, .quote {
     box-shadow: 0 0 8px #C2C2DA;
     border: 1px solid #C2C2DA;
     white-space: pre-wrap;
-    word-break: break-all;
-    word-wrap: break-word;
 }
 
 .form-style-1 .field-long {
@@ -192,5 +192,5 @@ textarea, .quote {
 }
 
 .server {
-    color: #12DA8A; /* • [en] Don't forget to nominate Transformice for "the Best Use Of A Farm Animal Award"! * /
+    color: #12DA8A; /* • [en] Don't forget to nominate Transformice for "the Best Use Of A Farm Animal Award"! */
 }
