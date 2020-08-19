@@ -189,11 +189,22 @@ function Colorify(str) {
             let m = null;
             
             // (Dis)connect message
-            m = s.match(/^(.+) (has disconnected|just connected).$/);
+            m = s.match(/^(• )?(?:\[([0-9:]+)\] )?([A-Za-z_#\d]+) (has disconnected|just connected).$/);
             if (m) {
-                let name = ignFormat(m[1]);
-                let t = m[2];
-                s = `<span class="BL">${name} ${t}.</span>`;
+                let is_tribe = m[1];
+                let time = m[2];
+                let name = ignFormat(m[3]);
+                let rest = m[4];
+                s = "";
+                if (is_tribe) {
+                    s = `<span class="tribe1">• `;
+                    if (time) {
+                        s += `[${time}] `;
+                    }
+                } else {
+                    s = `<span class="BL">`;
+                }
+                s += `${name} ${rest}.</span>`;
                 break;
             }
             
@@ -222,7 +233,7 @@ function Colorify(str) {
             
             /* Tribe chat */
             /* will conflict if #0001 speaks in tribe */
-            m = s.match(/^• (?:\[([0-9:]+)\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            m = s.match(/^• (?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.+)$/);
             if (m) {
                 let time = m[1];
                 let name = ignFormat(m[2], true);
@@ -236,7 +247,7 @@ function Colorify(str) {
             }
             
             /* Whispers */
-            m = s.match(/^(<|>) (?:\[([0-9:]+)\] )?(?:\[(.{2})\] )?\[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            m = s.match(/^(<|>) (?:\[([0-9:]+)\] )?(?:\[(.{2})\] )?\[([A-Za-z_#\d]+)\](.+)$/);
             if (m) {
                 let symbol = m[1];
                 let time = m[2];
@@ -265,7 +276,7 @@ function Colorify(str) {
                 s = `<span class="chat1">${m[1]}</span><span class="chat2">${m[2]}</span>`;
                 break;
             }
-            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.{2})] \[([A-Za-z_\d]+#\d{4})\](.+)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.{2})] \[([A-Za-z_#\d]+)\](.+)$/);
             if (m) {
                 let time = m[1];
                 let commu = m[2];
@@ -304,9 +315,16 @@ function Colorify(str) {
             }
             
             /* System message */
-            m = s.match(/^((?:\[[0-9:]+\] )?\[•])(.+)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[•\](.+)$/);
             if (m) {
-                s = `<span class="V">${m[1]}</span><span class="BL">${m[2]}</span>`;
+                let time = m[1];
+                let system = ignFormat("•", true)
+                let rest = m[2];
+                s = `<span class="V">`;
+                if (time) {
+                    s += `[${time}] `;
+                }
+                s += `[${system}]</span><span class="BL">${m[2]}</span>`;
                 break;
             }
             
@@ -325,7 +343,7 @@ function Colorify(str) {
             }
             
             /* Basic room text */
-            m = s.match(/^(?:\[([0-9:]+)\] )?\[(.+?)\](.+)$/);
+            m = s.match(/^(?:\[([0-9:]+)\] )?\[([A-Za-z_#\d]+)\](.+)$/);
             if (m) {
                 let time = m[1];
                 let name = ignFormat(m[2], true);
