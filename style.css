@@ -42,6 +42,7 @@ hr {
     font-family: Verdana;
     font-size: 14px;
     line-height: 18px;
+    overflow-wrap: break-word;
 }
 
 textarea, .quote {
