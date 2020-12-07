@@ -18,7 +18,7 @@ function db_install() {
     global $conn, $curr_version;
     $query = 'CREATE TABLE quotes (
             id MEDIUMINT AUTO_INCREMENT,
-            quote VARCHAR(32768),
+            quote TEXT(32768),
             postdate DATETIME NOT NULL,
             PRIMARY KEY (id)
             )';
